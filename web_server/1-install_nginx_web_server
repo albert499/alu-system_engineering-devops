@@ -1,6 +1,21 @@
 #!/usr/bin/env bash
-# Bash script that Install nginx on your web-01 server and requirements
+
+# Update package index
 apt-get update -y
+
+# Install Nginx
 apt-get install nginx -y
-echo "Hello World!" > /var/www/html/index.html
-service nginx start
+
+# Ensure Nginx is listening on port 80 (default configuration)
+sed -i 's/listen \[::\]:80 default_server;/listen 80 default_server;/g' /etc/nginx/sites-available/default
+sed -i 's/listen 80 default_server;/listen 80;/g' /etc/nginx/sites-available/default
+
+# Modify the default Nginx page to contain "Holberton School"
+echo 'Welcome to Holberton School' > /var/www/html/index.html
+
+# Restart Nginx using service command
+service nginx restart
+
+# Verify that Nginx is listening on port 80
+netstat -tuln | grep ':80'
+
